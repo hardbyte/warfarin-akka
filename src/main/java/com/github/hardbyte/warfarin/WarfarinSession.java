@@ -27,7 +27,7 @@ public class WarfarinSession extends AbstractLoggingActor {
   private void onCreateSession(Messages.CreateSession msg) {
     log().info("Warfarin Session Actor at Pharmaceutical company starting a new session");
     this.sessionID = msg.clientId;
-    this.sk = PaillierPrivateKey.create(256);
+    this.sk = PaillierPrivateKey.create(2048);
     this.pk = sk.getPublicKey();
     PaillierContext paillierContext = pk.createSignedContext();
 
