@@ -41,8 +41,8 @@ public class Patient extends AbstractLoggingActor {
   }
 
   private void onDosage(Messages.ObfuscatedDosage msg) {
-    double dosage = msg.result - this.random;
-    log().info("Patient's dosage is: {}", dosage);
+    double dosage = Math.pow(msg.result - this.random, 2);
+    log().info("Patient's dosage is: {} [mg/week]", dosage);
   }
 
   private void onReceivingWeights(Messages.EncryptedCoefficients msg) {
