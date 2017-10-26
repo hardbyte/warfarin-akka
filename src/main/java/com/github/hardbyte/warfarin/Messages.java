@@ -43,4 +43,5 @@ public class Messages {
     Begin(ActorRef pharma){this.pharma=pharma;}
   }
 
+  public static final class SessionTimeout { }
 }
