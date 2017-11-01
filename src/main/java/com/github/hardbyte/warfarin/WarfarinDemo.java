@@ -14,7 +14,7 @@ public class WarfarinDemo {
     final ActorRef pharma = system.actorOf(PharmaManager.props(timeout), "WarfarinSession");
 
     for (int i = 0; i < 10; i++) {
-      ActorRef patient = system.actorOf(Patient.props((long)i), "p-" + i);
+      ActorRef patient = system.actorOf(Doctor.props((long)i), "p-" + i);
       patient.tell(new Messages.Begin(pharma), ActorRef.noSender());
     }
 

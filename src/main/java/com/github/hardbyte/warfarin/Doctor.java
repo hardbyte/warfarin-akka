@@ -10,23 +10,23 @@ import com.n1analytics.paillier.EncryptedNumber;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Patient extends AbstractLoggingActor {
+public class Doctor extends AbstractLoggingActor {
   private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
   private final long patientId;
   private final double random;
 
   static public Props props(Long patientId) {
-    return Props.create(Patient.class, patientId);
+    return Props.create(Doctor.class, patientId);
   }
 
-  public Patient(long id) {
+  public Doctor(long id) {
     this.patientId = id;
     Random r = new Random();
     this.random = r.nextDouble();
   }
 
   private void onBeginComputation(Messages.Begin msg) {
-    log().info("The Patient is starting the protocol");
+    log().info("Doctor {} is starting the protocol", patientId);
     ActorRef pharmaActor = msg.pharma;
     pharmaActor.tell(new Messages.CreateSession(this.patientId), getSelf());
   }
@@ -42,11 +42,11 @@ public class Patient extends AbstractLoggingActor {
 
   private void onDosage(Messages.ObfuscatedDosage msg) {
     double dosage = Math.pow(msg.result - this.random, 2);
-    log().info("Patient's dosage is: {} [mg/week]", dosage);
+    log().info("Doctor's gets dosage as: {} [mg/week]", dosage);
   }
 
   private void onReceivingWeights(Messages.EncryptedCoefficients msg) {
-    log().info("Patient {} received {} encrypted weights", patientId, msg.encryptedWeights.size());
+    log().info("Doctor {} received {} encrypted weights", patientId, msg.encryptedWeights.size());
 
     EncryptedNumber encryptedDosage = computeEncryptedDosage(msg.encryptedWeights);
     EncryptedNumber obfuscatedEncryptedDosage = encryptedDosage.add(this.random);
