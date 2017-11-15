@@ -14,7 +14,7 @@ public class PharmaManager extends AbstractLoggingActor {
   private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
   private FiniteDuration sessionTimeout;
 
-  static public Props props(FiniteDuration timeout) {
+  static Props props(FiniteDuration timeout) {
     return Props.create(PharmaManager.class, timeout);
   }
 
@@ -25,7 +25,7 @@ public class PharmaManager extends AbstractLoggingActor {
 
   private void onCreateSession(Messages.CreateSession msg) {
     log().info("Pharmaceutical Manager starting a new warfarin session");
-    ActorRef sessionActor = getContext().actorOf(WarfarinSession.props(this.sessionTimeout), "session-" + msg.clientId);
+    ActorRef sessionActor = getContext().actorOf(WarfarinSession.props(this.sessionTimeout), "s-" + msg.clientId);
     getContext().watch(sessionActor);
     sessionActor.forward(msg, getContext());
 

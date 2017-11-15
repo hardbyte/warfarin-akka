@@ -15,7 +15,7 @@ public class Doctor extends AbstractLoggingActor {
   private final long patientId;
   private final double random;
 
-  static public Props props(Long patientId) {
+  static Props props(Long patientId) {
     return Props.create(Doctor.class, patientId);
   }
 
@@ -42,7 +42,7 @@ public class Doctor extends AbstractLoggingActor {
 
   private void onDosage(Messages.ObfuscatedDosage msg) {
     double dosage = Math.pow(msg.result - this.random, 2);
-    log().info("Doctor's gets dosage as: {} [mg/week]", dosage);
+    log().info("Doctor {} gets dosage as: {} [mg/week]", this.patientId, dosage);
   }
 
   private void onReceivingWeights(Messages.EncryptedCoefficients msg) {

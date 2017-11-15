@@ -18,7 +18,7 @@ public class WarfarinSession extends AbstractLoggingActor {
   private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
   private final double[] weights = {4.0376, 5.6044, -0.2546, -0.2614, 0.0118, 0.0087, 0.0134, 0.0128, -0.6752, -0.1092, 0.406, -0.276, 0.0443, -0.1032, 1.2799, 1.1816, -0.5695, -0.5503, -1.6974, -0.8677, -0.4854, -0.5211, -0.9357, -1.0616, -1.9206, -2.3312, -0.2188, -1.2948, 1.0409, 7.5016};
 
-  Cancellable sessionTimeoutTimer;
+  private Cancellable sessionTimeoutTimer;
 
   private long sessionID;
   private PaillierPrivateKey sk;
@@ -38,12 +38,12 @@ public class WarfarinSession extends AbstractLoggingActor {
         );
   }
 
-  static public Props props(FiniteDuration timeout) {
+  static Props props(FiniteDuration timeout) {
     return Props.create(WarfarinSession.class, timeout);
   }
 
   private void onCreateSession(Messages.CreateSession msg) {
-    log().info("Warfarin Session Actor at Pharmaceutical company starting a new session");
+    log().info("Warfarin Session at Pharmaceutical company starting");
     this.sessionID = msg.clientId;
     this.sk = PaillierPrivateKey.create(2048);
     this.pk = sk.getPublicKey();
@@ -53,11 +53,12 @@ public class WarfarinSession extends AbstractLoggingActor {
 
     ArrayList<EncryptedNumber> encryptedWeights = new ArrayList<>();
 
-    for (int i = 0; i < weights.length; i++) {
-      double weight = weights[i];
+    for (double weight : weights) {
       EncryptedNumber ciphertext = paillierContext.encrypt(weight);
       encryptedWeights.add(ciphertext);
     }
+
+    log().info("Weights have been encrypted");
 
     getSender().tell(new Messages.EncryptedCoefficients(msg.clientId, pk, encryptedWeights), getSelf());
   }
