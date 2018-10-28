@@ -42,11 +42,15 @@ public class Doctor extends AbstractLoggingActor {
 
   private void onDosage(Messages.ObfuscatedDosage msg) {
     double dosage = Math.pow(msg.result - this.random, 2);
-    log().info("Doctor {} gets dosage as: {} [mg/week]", this.patientId, dosage);
+    log().info("Doctor {} gets dosage as: {} [mg/week]",
+        this.patientId,
+        String.format("%.2f", dosage));
   }
 
   private void onReceivingWeights(Messages.EncryptedCoefficients msg) {
-    log().info("Doctor {} received {} encrypted weights", patientId, msg.encryptedWeights.size());
+    log().info("Doctor {} received {} encrypted weights",
+        patientId,
+        msg.encryptedWeights.size());
 
     EncryptedNumber encryptedDosage = computeEncryptedDosage(msg.encryptedWeights);
     EncryptedNumber obfuscatedEncryptedDosage = encryptedDosage.add(this.random);
@@ -57,7 +61,6 @@ public class Doctor extends AbstractLoggingActor {
   private EncryptedNumber computeEncryptedDosage(ArrayList<EncryptedNumber> encryptedWeights) {
 
     return encryptedWeights.stream()
-        // TODO: for now we just use a single constant instead of local data...
         .map(e -> e.multiply(patientId))
         .reduce(EncryptedNumber::add)
         .get();

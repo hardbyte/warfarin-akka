@@ -45,7 +45,7 @@ public class WarfarinSession extends AbstractLoggingActor {
   private void onCreateSession(Messages.CreateSession msg) {
     log().info("Warfarin Session at Pharmaceutical company starting");
     this.sessionID = msg.clientId;
-    this.sk = PaillierPrivateKey.create(2048);
+    this.sk = PaillierPrivateKey.create(4096);
     this.pk = sk.getPublicKey();
     PaillierContext paillierContext = pk.createSignedContext();
 
@@ -80,7 +80,7 @@ public class WarfarinSession extends AbstractLoggingActor {
   private void onDecrypt(Messages.DecryptionRequest msg) {
     log().info("Decryption step");
     double result = this.sk.decrypt(msg.ciphertext).decodeDouble();
-    log().info("Result: {}", result);
+    log().info("Result: {}", String.format("%.2f", result));
     getSender().tell(new Messages.ObfuscatedDosage(result), getSelf());
 
     log().info("Shutting down session");
